@@ -11,13 +11,13 @@
 
 ---
 
-## 📖 项目简介
+## 📖 项目简介：
 
 **edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
 
 - 🖥️ **Demo 演示站点**：[https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
 
-### ✨ 核心特性
+### ✨ 核心特性：
 
 - 🛡️ **协议支持**：支持 VLESS、Trojan、Shadowsocks 等主流协议，深度集成加密传输。
 - 📊 **管理面板**：内置可视化后台，支持实时配置修改、日志查看及流量统计。
@@ -28,14 +28,14 @@
 
 ---
 
-## 💡 快速部署
+## 💡 快速部署：
 >[!TIP]
 > 📖 **详尽图文教程**：[edgetunnel 部署指南](https://cmliussss.com/p/edt2/)
 
 >[!WARNING]
 > ⚠️ **Error 1101问题**：[视频解析](https://www.youtube.com/watch?v=r4uVTEJptdE)
 
-### ⚙️ Workers 部署
+### ⚙️ Workers 部署：
 
 <details>
 <summary><code><strong>「 Workers 部署文字教程 」</strong></code></summary>
