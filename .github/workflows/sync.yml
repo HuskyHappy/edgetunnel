@@ -1,31 +1,44 @@
 name: Upstream Sync
 
-on:
-  schedule:
-    # 每天 02:00 北京时间（= 前一日 18:00 UTC）
-    - cron: '0 18 * * *'
-    # 每天 14:00 北京时间（= 06:00 UTC）
-    - cron: '0 6 * * *'
-  workflow_dispatch:
-
 permissions:
   contents: write
 
+on:
+  schedule:
+    - cron: "0 18 * * *" # 每天 02:00 北京时间（= 前一日 18:00 UTC）
+    - cron: "0 6 * * *"  # 每天 14:00 北京时间（= 06:00 UTC）
+  workflow_dispatch:
+
 jobs:
-  sync:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
     runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout target repo
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          ref: main
 
-      - name: Sync latest commits from upstream repo
+      - name: Sync upstream changes
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git remote add upstream https://github.com/cmliu/edgetunnel.git || true
-          git fetch upstream --prune --tags
-          git checkout main
-          # 镜像模式：强制对齐上游，不保留 main 上任何本地提交
-          git reset --hard upstream/main
-          git push origin main --force
+          git config user.name "GH Action - Upstream Sync"
+          git config user.email "action@github.com"
+
+          git remote add upstream https://github.com/cmliu/edgetunnel.git
+          git fetch upstream main
+
+          if git diff --quiet HEAD upstream/main; then
+            # 内容和上游一致，直接对齐，顺带清理历史分叉留下的多余 merge commit
+            git reset --hard upstream/main
+            git push --force-with-lease origin main
+          else
+            # 有本地修改，保持原来的合并方式，不覆盖任何人的改动
+            if ! git pull --no-rebase upstream main; then
+              echo "[Error] 合并上游变更产生冲突，自动同步已暂停，请手动 Sync Fork 并解决冲突。"
+              exit 1
+            fi
+            git push origin main
+          fi
